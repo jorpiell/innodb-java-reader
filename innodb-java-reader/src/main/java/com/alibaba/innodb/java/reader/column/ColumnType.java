@@ -54,6 +54,7 @@ public final class ColumnType {
   public static final String LONGBLOB = "LONGBLOB";
   public static final String TINYTEXT = "TINYTEXT";
   public static final String TEXT = "TEXT";
+  public static final String JSON = "JSON";
   public static final String MEDIUMTEXT = "MEDIUMTEXT";
   public static final String LONGTEXT = "LONGTEXT";
   public static final String YEAR = "YEAR";
@@ -65,27 +66,27 @@ public final class ColumnType {
   public static final String ROW_ID = "__#ROW_ID#__";
 
   public static final Set<String> VARIABLE_LENGTH_TYPES =
-      ImmutableSet.<String>builder().add(VARCHAR, VARBINARY, TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB,
-          TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT).build();
+          ImmutableSet.<String>builder().add(VARCHAR, VARBINARY, TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB,
+                  TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT, JSON).build();
 
   public static final Set<String> BLOB_TEXT_TYPES =
-      ImmutableSet.<String>builder().add(TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB,
-          TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT).build();
+          ImmutableSet.<String>builder().add(TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB,
+                  TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT, JSON).build();
 
   public static final Set<String> CHAR_TYPES =
-      ImmutableSet.<String>builder().add(VARCHAR, CHAR).build();
+          ImmutableSet.<String>builder().add(VARCHAR, CHAR).build();
 
   public static final Set<String> BLOB_TYPES =
-      ImmutableSet.<String>builder().add(TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB).build();
+          ImmutableSet.<String>builder().add(TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB, JSON).build();
 
   public static final Set<String> TEXT_TYPES =
-      ImmutableSet.<String>builder().add(TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT).build();
+          ImmutableSet.<String>builder().add(TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT).build();
 
   public static final Set<String> JAVA_INTEGER_TYPES =
-      ImmutableSet.<String>builder().add(UNSIGNED_TINYINT, UNSIGNED_SMALLINT,
-          UNSIGNED_MEDIUMINT, UNSIGNED_INT, TINYINT, SMALLINT, MEDIUMINT, INT).build();
+          ImmutableSet.<String>builder().add(UNSIGNED_TINYINT, UNSIGNED_SMALLINT,
+                  UNSIGNED_MEDIUMINT, UNSIGNED_INT, TINYINT, SMALLINT, MEDIUMINT, INT).build();
 
   public static final Set<String> JAVA_LONG_TYPES =
-      ImmutableSet.<String>builder().add(UNSIGNED_BIGINT, BIGINT).build();
+          ImmutableSet.<String>builder().add(UNSIGNED_BIGINT, BIGINT).build();
 
 }

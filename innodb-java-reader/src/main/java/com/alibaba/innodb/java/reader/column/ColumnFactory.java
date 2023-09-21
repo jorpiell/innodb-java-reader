@@ -14,15 +14,9 @@ import com.alibaba.innodb.java.reader.util.Symbol;
 import com.alibaba.innodb.java.reader.util.Utils;
 
 import org.apache.commons.lang3.time.FastDateFormat;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.alibaba.innodb.java.reader.Constants.MAX_ONE_BYTE_ENUM_COUNT;
@@ -59,7 +53,7 @@ public class ColumnFactory {
    * system default timezone.
    */
   private static final FastDateFormat TIMESTAMP_FORMAT
-      = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", Utils.getTimeZone());
+          = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", Utils.getTimeZone());
 
   /**
    * Prevent instantiation.
@@ -434,6 +428,31 @@ public class ColumnFactory {
     }
   };
 
+  public static final ColumnParser<String> JSON = new AbstractColumnParser<String>() {
+
+    @Override
+    public String readFrom(SliceInput input, int len, String charset) {
+      JSONColumnParser columnParser = new JSONColumnParser(input.readByteArray(len));
+      return columnParser.parse();
+    }
+
+    @Override
+    public String readFrom(byte[] buffer) {
+      JSONColumnParser columnParser = new JSONColumnParser(buffer);
+      return columnParser.parse();
+    }
+
+    @Override
+    public void skipFrom(SliceInput input, int len, String charset) {
+      input.skipBytes(len);
+    }
+
+    @Override
+    public Class<?> typeClass() {
+      return byte[].class;
+    }
+  };
+
   private static final ColumnParser<byte[]> BLOB = new AbstractColumnParser<byte[]>() {
 
     // ignore charset
@@ -535,9 +554,9 @@ public class ColumnFactory {
       long packedValue = input.unpackBigendian(4);
       String fractionStr = getFractionString(input, column);
       return String.format("%s%s",
-          packedValue == 0L ? "0000-00-00 00:00:00"
-              : TIMESTAMP_FORMAT.format(new Date(packedValue * 1000L)),
-          fractionStr);
+              packedValue == 0L ? "0000-00-00 00:00:00"
+                      : TIMESTAMP_FORMAT.format(new Date(packedValue * 1000L)),
+              fractionStr);
     }
 
     @Override
@@ -585,7 +604,7 @@ public class ColumnFactory {
       }
 
       String fractionStr = column.getPrecision() > 0
-          ? String.format(".%06d", usec).substring(0, column.getPrecision() + 1) : Symbol.EMPTY;
+              ? String.format(".%06d", usec).substring(0, column.getPrecision() + 1) : Symbol.EMPTY;
 
       return String.format("%s%02d:%02d:%02d%s", isNegative ? "-" : "", hour, minute, second, fractionStr);
     }
@@ -713,9 +732,9 @@ public class ColumnFactory {
     public SingleEnumLiteral readFrom(SliceInput input, Column column) {
       List<String> enums = column.getEnums();
       int ordinal = enums.size() > MAX_ONE_BYTE_ENUM_COUNT
-          ? input.readUnsignedShort() : (int) input.readByte();
+              ? input.readUnsignedShort() : (int) input.readByte();
       checkPositionIndex(ordinal, enums.size(), "Ordinal " + ordinal
-          + " is out of range for " + enums);
+              + " is out of range for " + enums);
       // 0 can not be inserted into table, enum ordinal should start from 1,
       // but sometimes this can be inserted successfully with warning message in MySQL.
       if (ordinal == 0) {
@@ -918,6 +937,7 @@ public class ColumnFactory {
     typeToColumnParserMap.put(ColumnType.VARBINARY, VARBINARY);
     typeToColumnParserMap.put(ColumnType.TINYTEXT, TEXT);
     typeToColumnParserMap.put(ColumnType.TEXT, TEXT);
+    typeToColumnParserMap.put(ColumnType.JSON, JSON);
     typeToColumnParserMap.put(ColumnType.MEDIUMTEXT, TEXT);
     typeToColumnParserMap.put(ColumnType.LONGTEXT, TEXT);
     typeToColumnParserMap.put(ColumnType.TINYBLOB, BLOB);

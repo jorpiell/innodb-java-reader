@@ -100,7 +100,7 @@ public class TableDefUtil {
   private static void handleIndex(CreateTable stmt, TableDef tableDef) {
     List<Index> indices = stmt.getIndexes();
     if (CollectionUtils.isNotEmpty(indices)) {
-      Map<String, Integer> indexesSoFar = new HashMap<>();
+      Map<String, Integer> indexesSoFar = new HashMap<>(0);
       for (Index index : indices) {
         if (KeyMeta.Type.isValid(index.getType())) {
           List<String> colNames = getColumnNames(index);

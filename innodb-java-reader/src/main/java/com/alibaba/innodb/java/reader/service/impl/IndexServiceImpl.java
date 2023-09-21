@@ -3,6 +3,7 @@
  */
 package com.alibaba.innodb.java.reader.service.impl;
 
+import com.alibaba.innodb.java.reader.column.ColumnType;
 import com.google.common.collect.ImmutableList;
 
 import com.alibaba.innodb.java.reader.column.ColumnFactory;
@@ -1160,7 +1161,14 @@ public class IndexServiceImpl implements IndexService {
             .readFrom(bodyInput, varLenArray.get(varLenIdx), column.getJavaCharset());
         record.put(column.getName(), val);
       } else {
-        handleOverflowPage(bodyInput, record, column, varLenArray.get(varLenIdx));
+        if (column.getType().equals(ColumnType.JSON)) {
+          ByteBuffer buffer = readOverflowPageByteBuffer(bodyInput, record, column, varLenArray.get(varLenIdx));
+          Object val = ColumnFactory.getColumnParser(column.getType())
+                  .readFrom(buffer.array());
+          record.put(column.getName(), val);
+        } else {
+          handleOverflowPage(bodyInput, record, column, varLenArray.get(varLenIdx));
+        }
       }
     } else if (column.isFixedLength()) {
       Object val = ColumnFactory.getColumnParser(column.getType())

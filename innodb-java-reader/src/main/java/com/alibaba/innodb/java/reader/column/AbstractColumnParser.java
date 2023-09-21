@@ -24,6 +24,11 @@ public abstract class AbstractColumnParser<V> implements ColumnParser<V> {
   }
 
   @Override
+  public V readFrom(byte[] buffer) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void skipFrom(SliceInput input, int len, String charset) {
     readFrom(input, len, charset);
   }

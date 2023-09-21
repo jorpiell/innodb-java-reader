@@ -33,6 +33,8 @@ public interface ColumnParser<V> {
    */
   V readFrom(SliceInput input, Column column);
 
+  V readFrom(byte[] input);
+
   /**
    * For row-oriented columnar storage format, there should be a way to
    * skip value from byte array input with length and charset,
